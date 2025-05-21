@@ -1,5 +1,4 @@
 from functools import wraps
-from itertools import combinations
 import os
 from time import time
 import random
@@ -81,14 +80,13 @@ class GeneticAlgorithm(Algorithm):
         return population
 
     def fitness(self, individual: List[int]) -> float:
-        """Функция приспособленности - суммарная ценность предметов"""
+        """Функция приспособленности"""
         total_weight = self.get_total_weight(individual)
         total_value = self.get_total_value(individual)
 
         if total_weight <= self.capacity:
-            return total_value  # Допустимое решение
+            return total_value
         else:
-            # Штрафуем, но не обнуляем (линейный штраф)
             penalty = (total_weight - self.capacity) / self.capacity
             return max(0.0, total_value * (1 - penalty))
 
@@ -129,16 +127,12 @@ class GeneticAlgorithm(Algorithm):
     def evolve(self, population: List[List[int]]) -> List[List[int]]:
         """Создает новое поколение"""
         new_population = []
-
-        # Элитизм - сохраняем лучшую особь
         if self.elitism:
             best_individual = max(population, key=lambda ind: self.fitness(ind))
             new_population.append(best_individual.copy())
             start_index = 1
         else:
             start_index = 0
-
-        # Заполняем новую популяцию
         for i in range(start_index, self.population_size, 2):
             parent1 = self.tournament_selection(population)
             parent2 = self.tournament_selection(population)
@@ -158,7 +152,7 @@ class GeneticAlgorithm(Algorithm):
         population = self.initialize_population()
         best_fitness = -1
         no_improvement = 0
-        max_no_improvement = 15  # Остановка, если нет улучшений 15 поколений
+        max_no_improvement = 15
 
         for generation in range(self.generations):
             population = self.evolve(population)
@@ -172,7 +166,6 @@ class GeneticAlgorithm(Algorithm):
                 no_improvement += 1
                 if no_improvement >= max_no_improvement:
                     break
-        # Возвращаем лучшую особь после всех поколений
         best_solution = max(population, key=lambda ind: self.fitness(ind))
         return best_solution
 

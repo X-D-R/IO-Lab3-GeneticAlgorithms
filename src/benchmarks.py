@@ -7,7 +7,7 @@ from src.algorithms import GeneticAlgorithm, read_knapsack_data, Algorithm, File
 class Benchmark:
     def __init__(self, algorithm_classes: Tuple[Type[Algorithm]], runs: int = 1):
         self.algorithm_classes = algorithm_classes
-        self.runs = runs  # Количество запусков для усреднения результатов
+        self.runs = runs
 
     def run_all_benchmarks(self):
         results = []
@@ -118,10 +118,9 @@ if __name__ == '__main__':
         'elitism': True
     }
 
-    class CustomGA(GeneticAlgorithm):
+    class CustomGARansack(GeneticAlgorithm):
         def __init__(self, data):
             super().__init__(data, **custom_ga_params)
 
-
-    benchmark = Benchmark(algorithm_classes=(CustomGA,), runs=1)
+    benchmark = Benchmark(algorithm_classes=(CustomGARansack,), runs=1)
     benchmark.run_all_benchmarks()
