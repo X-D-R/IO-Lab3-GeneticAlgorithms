@@ -202,5 +202,5 @@ if __name__ == "__main__":
     files = FilesKnapsack(capacity_file, weights_file, values_file, optimal_weights_file)
 
     data = read_knapsack_data(files)
-    print(GeneticAlgorithm(data).solve())
+    print(GeneticAlgorithm(data)())
     print(data.optimal_weights)
