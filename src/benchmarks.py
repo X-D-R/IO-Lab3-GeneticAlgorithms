@@ -1,7 +1,8 @@
 import os
 from typing import Type, Tuple
 import pandas as pd
-from src.algorithms import GeneticAlgorithm, read_knapsack_data, Algorithm, FilesKnapsack
+from src.algorithms import GeneticAlgorithm, read_knapsack_data, Algorithm, FilesKnapsack, TwoApproxAlgorithm, DPWeights, BranchAndBound, \
+    PTAS, GeneticAlgorithmTwoApprox
 
 
 class Benchmark:
@@ -33,12 +34,15 @@ class Benchmark:
             total_time = 0
             algorithm = algorithm_class(data)
             result = algorithm()
+            actual_value = 0
             for _ in range(1000):
                 algorithm = algorithm_class(data)
                 result = algorithm()
                 total_time += algorithm.execution_time
+                actual_value += algorithm.get_total_value(result)
 
             exec_time = total_time / 1000
+            actual_value = actual_value / 1000
 
             inter_solutions = algorithm.inter_solutions
             expected_weights = data.optimal_weights
@@ -48,7 +52,7 @@ class Benchmark:
             actual_total_weight = algorithm.get_total_weight(actual_weights)
 
             expected_value = algorithm.get_total_value(expected_weights)
-            actual_value = algorithm.get_total_value(result)
+            # actual_value = algorithm.get_total_value(result)
             actual_difference = expected_value - actual_value
             percentage_difference = round((actual_difference / expected_value) * 100, 4)
             print(f'{algorithm_class.__name__}: {percentage_difference}%')
@@ -112,9 +116,9 @@ class Benchmark:
 
 if __name__ == '__main__':
     custom_ga_params = {
-        'population_size': 10,
-        'generations': 10,
-        'crossover_rate': 0.9,
+        'population_size': 3,
+        'generations': 2,
+        'crossover_rate': 0.85,
         'mutation_rate': 0.1,
         'tournament_size': 3,
         'elitism': True
@@ -124,5 +128,9 @@ if __name__ == '__main__':
         def __init__(self, data):
             super().__init__(data, **custom_ga_params)
 
-    benchmark = Benchmark(algorithm_classes=(CustomGARansack,), runs=1)
+    class CustomGATARansack(GeneticAlgorithmTwoApprox):
+        def __init__(self, data):
+            super().__init__(data, **custom_ga_params)
+
+    benchmark = Benchmark(algorithm_classes=(CustomGARansack,TwoApproxAlgorithm, DPWeights, BranchAndBound, PTAS, CustomGATARansack), runs=1)
     benchmark.run_all_benchmarks()
