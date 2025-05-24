@@ -49,5 +49,5 @@ class TSPBenchmark:
 
 
 if __name__ == '__main__':
-    benchmark = TSPBenchmark(SalesmanAlgorithm, 'benchmarks/salesman',3)
+    benchmark = TSPBenchmark(SalesmanAlgorithm, 'benchmarks/salesman',20)
     benchmark.run_all()
