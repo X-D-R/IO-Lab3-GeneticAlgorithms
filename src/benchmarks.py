@@ -24,44 +24,46 @@ class Benchmark:
         self.save_results(results, results_diff, project_root)
 
     def run_one_benchmark(self, bench_path: str, results: list, results_diff: list, bench_id: int):
-        files = FilesKnapsack(
-            os.path.join(bench_path, f'p0{bench_id}_c.txt'),
-            os.path.join(bench_path, f'p0{bench_id}_w.txt'),
-            os.path.join(bench_path, f'p0{bench_id}_p.txt'),
-            os.path.join(bench_path, f'p0{bench_id}_s.txt')
-        )
+        files = FilesKnapsack(os.path.join(bench_path, f'p0{bench_id}_c.txt'),
+                              os.path.join(bench_path, f'p0{bench_id}_w.txt'),
+                              os.path.join(bench_path, f'p0{bench_id}_p.txt'),
+                              os.path.join(bench_path, f'p0{bench_id}_s.txt'))
         data = read_knapsack_data(files)
-
         for algorithm_class in self.algorithm_classes:
-            stats = self.run_algorithm(algorithm_class, data)
+            total_time = 0
+            algorithm = algorithm_class(data)
+            result = algorithm()
+            for _ in range(1000):
+                algorithm = algorithm_class(data)
+                result = algorithm()
+                total_time += algorithm.execution_time
 
-            print(f"{algorithm_class.__name__}: {stats['percentage_difference']}%")
+            exec_time = total_time / 1000
 
-            results.append({
-                'bench id': bench_id,
-                'algorithm': algorithm_class.__name__,
-                'time': stats['avg_time'],
-                'number of inter solutions': stats['inter_solutions'],
-                'alg weights': stats['actual_weights'],
-                'alg total weight': stats['actual_total_weight'],
-                'alg profit': stats['actual_value']
-            })
+            inter_solutions = algorithm.inter_solutions
+            expected_weights = data.optimal_weights
+            actual_weights = result
 
-            results_diff.append({
-                'bench id': bench_id,
-                'algorithm': algorithm_class.__name__,
-                'time': stats['avg_time'],
-                'number of inter solutions': stats['inter_solutions'],
-                'alg weights': stats['actual_weights'],
-                'expected weights': data.optimal_weights,
-                'capacity': data.capacity,
-                'alg total weight': stats['actual_total_weight'],
-                'expected total weight': stats['expected_total_weight'],
-                'alg profit': stats['actual_value'],
-                'expected profit': stats['expected_value'],
-                'profit difference': stats['actual_difference'],
-                'percentage profit difference': stats['percentage_difference']
-            })
+            expected_total_weight = algorithm.get_total_weight(expected_weights)
+            actual_total_weight = algorithm.get_total_weight(actual_weights)
+
+            expected_value = algorithm.get_total_value(expected_weights)
+            actual_value = algorithm.get_total_value(result)
+            actual_difference = expected_value - actual_value
+            percentage_difference = round((actual_difference / expected_value) * 100, 4)
+            print(f'{algorithm_class.__name__}: {percentage_difference}%')
+
+            results.append({'bench id': bench_id, 'algorithm': algorithm_class.__name__, 'time': exec_time,
+                            'number of inter solutions': inter_solutions, 'alg weights': actual_weights,
+                            'alg total weight': actual_total_weight, 'alg profit': actual_value})
+
+            results_diff.append({'bench id': bench_id, 'algorithm': algorithm_class.__name__, 'time': exec_time,
+                                 'number of inter solutions': inter_solutions, 'alg weights': actual_weights,
+                                 'expected weights': expected_weights, 'capacity': data.capacity,
+                                 'alg total weight': actual_total_weight,
+                                 'expected total weight': expected_total_weight, 'alg profit': actual_value,
+                                 'expected profit': expected_value, 'profit difference': actual_difference,
+                                 'percentage profit difference': percentage_difference})
 
     def run_algorithm(self, algorithm_class: Type[Algorithm], data: FilesKnapsack) -> dict:
         total_time = 0
@@ -104,16 +106,16 @@ class Benchmark:
         print("\nSummary Results:")
         print(data)
 
-        data.to_csv(os.path.join(output_dir, 'report_single_run.csv'), index=False)
-        data_diff.to_csv(os.path.join(output_dir, 'report_diff_single_run.csv'), index=False)
+        data.to_csv(os.path.join(output_dir, 'report.csv'), index=False)
+        data_diff.to_csv(os.path.join(output_dir, 'report_diff.csv'), index=False)
 
 
 if __name__ == '__main__':
     custom_ga_params = {
-        'population_size': 100,
-        'generations': 100,
-        'crossover_rate': 0.85,
-        'mutation_rate': 0.05,
+        'population_size': 10,
+        'generations': 10,
+        'crossover_rate': 0.9,
+        'mutation_rate': 0.1,
         'tournament_size': 3,
         'elitism': True
     }

@@ -1,0 +1,8 @@
+bench id,algorithm,time,number of inter solutions,alg weights,alg total weight,alg profit
+1,CustomGARansack,0.000500681,0,"[1, 1, 1, 1, 0, 1, 0, 0, 0, 0]",165,309
+2,CustomGARansack,0.00035683400000000015,0,"[1, 0, 1, 0, 0]",23,47
+3,CustomGARansack,0.0003782759999999998,0,"[1, 1, 0, 1, 0, 0]",179,146
+4,CustomGARansack,0.000430526,0,"[1, 1, 0, 0, 1, 1, 0]",48,102
+5,CustomGARansack,0.000436595,0,"[1, 0, 1, 1, 1, 0, 1, 0]",102,895
+6,CustomGARansack,0.0004275200000000002,0,"[0, 0, 1, 1, 0, 0, 1]",168,1721
+7,CustomGARansack,0.0006940850000000011,0,"[1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1]",740,1441

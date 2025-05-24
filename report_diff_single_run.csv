@@ -1,8 +1,0 @@
-bench id,algorithm,time,number of inter solutions,alg weights,expected weights,capacity,alg total weight,expected total weight,alg profit,expected profit,profit difference,percentage profit difference
-1,CustomGARansack,0.038113,0,"[1, 1, 1, 1, 0, 1, 0, 0, 0, 0]","[1, 1, 1, 1, 0, 1, 0, 0, 0, 0]",165,165,165,309,309,0,0.0
-2,CustomGARansack,0.021989,0,"[0, 1, 1, 1, 0]","[0, 1, 1, 1, 0]",26,26,26,51,51,0,0.0
-3,CustomGARansack,0.023275,0,"[1, 1, 0, 0, 1, 0]","[1, 1, 0, 0, 1, 0]",190,190,190,150,150,0,0.0
-4,CustomGARansack,0.025531,0,"[1, 0, 0, 1, 0, 0, 0]","[1, 0, 0, 1, 0, 0, 0]",50,50,50,107,107,0,0.0
-5,CustomGARansack,0.026061,0,"[1, 0, 1, 1, 1, 0, 1, 1]","[1, 0, 1, 1, 1, 0, 1, 1]",104,104,104,900,900,0,0.0
-6,CustomGARansack,0.026001,0,"[0, 1, 0, 1, 0, 0, 1]","[0, 1, 0, 1, 0, 0, 1]",170,169,169,1735,1735,0,0.0
-7,CustomGARansack,0.057964,0,"[0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1]","[1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1]",750,748,749,1453,1458,5,0.3429
