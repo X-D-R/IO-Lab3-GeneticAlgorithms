@@ -175,6 +175,44 @@ class GeneticAlgorithmTwoApprox(GeneticAlgorithm):
         return population
 
 
+class GeneticAlgorithmGreed(GeneticAlgorithm):
+    def __init__(self, data: KnapsackData,
+                 population_size: int = 100,
+                 generations: int = 100,
+                 crossover_rate: float = 0.8,
+                 mutation_rate: float = 0.1,
+                 tournament_size: int = 3,
+                 elitism: bool = True):
+        super().__init__(data, population_size, generations, crossover_rate, mutation_rate, tournament_size, elitism)
+        self.alg = TwoApproxAlgorithm(data)
+
+    def initialize_population(self) -> List[List[int]]:
+        """Полностью жадная инициализация популяции с вариациями"""
+        population = []
+        sorted_items = sorted(
+            [(i, self.values[i] / self.weights[i]) for i in range(self.num_items)],
+            key=lambda x: -x[1]
+        )
+
+        for _ in range(self.population_size):
+            individual = [0] * self.num_items
+            remaining_capacity = self.capacity
+
+            for i, _ in sorted_items:
+                if self.weights[i] <= remaining_capacity:
+                    individual[i] = 1
+                    remaining_capacity -= self.weights[i]
+
+            if random.random() < 0.3:
+                ones = [i for i, val in enumerate(individual) if val == 1]
+                if ones:
+                    individual[random.choice(ones)] = 0
+
+            population.append(individual)
+
+        return population
+
+
 class TwoApproxAlgorithm(Algorithm):
     def greed_search(self):
         qualities = {i: value / weight for i, weight in enumerate(self.weights) for value in self.values}

@@ -2,7 +2,7 @@ import os
 from typing import Type, Tuple
 import pandas as pd
 from src.algorithms import GeneticAlgorithm, read_knapsack_data, Algorithm, FilesKnapsack, TwoApproxAlgorithm, DPWeights, BranchAndBound, \
-    PTAS, GeneticAlgorithmTwoApprox
+    PTAS, GeneticAlgorithmTwoApprox, GeneticAlgorithmGreed
 
 
 class Benchmark:
@@ -123,6 +123,23 @@ if __name__ == '__main__':
         'tournament_size': 3,
         'elitism': True
     }
+    custom_gata_params = {
+        'population_size': 3,
+        'generations': 2,
+        'crossover_rate': 0.85,
+        'mutation_rate': 0.4,
+        'tournament_size': 3,
+        'elitism': True
+    }
+
+    custom_gag_params = {
+        'population_size': 3,
+        'generations': 2,
+        'crossover_rate': 0.85,
+        'mutation_rate': 0.4,
+        'tournament_size': 3,
+        'elitism': True
+    }
 
     class CustomGARansack(GeneticAlgorithm):
         def __init__(self, data):
@@ -130,7 +147,11 @@ if __name__ == '__main__':
 
     class CustomGATARansack(GeneticAlgorithmTwoApprox):
         def __init__(self, data):
-            super().__init__(data, **custom_ga_params)
+            super().__init__(data, **custom_gata_params)
 
-    benchmark = Benchmark(algorithm_classes=(CustomGARansack,TwoApproxAlgorithm, DPWeights, BranchAndBound, PTAS, CustomGATARansack), runs=1)
+    class CustomGAGRansack(GeneticAlgorithmTwoApprox):
+        def __init__(self, data):
+            super().__init__(data, **custom_gag_params)
+
+    benchmark = Benchmark(algorithm_classes=(CustomGARansack,TwoApproxAlgorithm, DPWeights, BranchAndBound, PTAS, CustomGATARansack, CustomGAGRansack), runs=1)
     benchmark.run_all_benchmarks()
