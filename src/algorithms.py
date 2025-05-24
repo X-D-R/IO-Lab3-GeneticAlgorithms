@@ -114,9 +114,7 @@ class GeneticAlgorithm(Algorithm):
             if random.random() < self.mutation_rate:
                 individual[i] = 1 - individual[i]
 
-        # Исправляем решение, если оно стало недопустимым
         while self.get_total_weight(individual) > self.capacity:
-            # Отключаем случайный предмет
             ones = [i for i, val in enumerate(individual) if val == 1]
             if not ones:
                 break
@@ -151,8 +149,6 @@ class GeneticAlgorithm(Algorithm):
         """Основной метод решения задачи"""
         population = self.initialize_population()
         best_fitness = -1
-        no_improvement = 0
-        max_no_improvement = 15
 
         for generation in range(self.generations):
             population = self.evolve(population)
@@ -161,11 +157,6 @@ class GeneticAlgorithm(Algorithm):
 
             if current_fitness > best_fitness:
                 best_fitness = current_fitness
-                no_improvement = 0
-            else:
-                no_improvement += 1
-                if no_improvement >= max_no_improvement:
-                    break
         best_solution = max(population, key=lambda ind: self.fitness(ind))
         return best_solution
 
